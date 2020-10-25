@@ -1,12 +1,34 @@
-hides = document.getElementsByClassName("accesshide")
-for (hide of hides) {
-	if (hide.textContent.localeCompare(" Kaltura Video Resource") == 0) {
-		//name, course, week, URL
-		nameElement = hide.parentElement
-		nameElementText = nameElement.textContent
-		name = nameElementText.substring(0, nameElementText.length-" Kaltura Video Resource".length)
-		console.log(name)
+subdirs = document.getElementsByClassName("breadcrumb-nav")[0].children[1].children[0].children
+fullName = subdirs[subdirs.length-1].children[0].children[0].getAttribute("title")
+fullName = fullName.replace(/[/\\?%*:|"<>]/g, '-')
+id = fullName.substring(0,8)
 
-		console.log(nameElement)
+topics = document.getElementsByClassName("ctopics topics row-fluid")[0].children
+//iterate through weeks
+videos = []
+for (topic of topics) {
+	content = topic.getElementsByClassName("content")[0]
+	weekName = content.children[0].textContent
+	weekName = weekName.replace(/[/\\?%*:|"<>]/g, '-')
+
+	videoEntries = content.querySelectorAll(".activity.modtype_kalvidres.kalvidres,.activity.kalvidpres.modtype_kalvidpres")
+	//console.log(videoEntries)
+	for (entry of videoEntries) {
+		entryText = entry.textContent
+		videoName = entryText.substring(0,entryText.length-" Kaltura Video Resource".length)
+		videoName = videoName.replace(/[/\\?%*:|"<>]/g, '-')
+
+
+		link = entry.getElementsByClassName("aalink")[0].getAttribute("href")
+
+		o = {
+			'course':fullName,
+			'courseID':id,
+			'week':weekName,
+			'name':videoName,
+			'pageUrl':link
+		}
+		videos.push(o)
 	}
 }
+return videos

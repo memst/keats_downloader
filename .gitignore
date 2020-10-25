@@ -1,1 +1,6 @@
 *.mp4
+library/*
+online_library/*
+selenium/chrome_driver/*
+*.db
+courses.json
