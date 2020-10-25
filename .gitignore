@@ -4,3 +4,4 @@ online_library/*
 selenium/chrome_driver/*
 *.db
 courses.json
+selenium/chromedriver.exe
