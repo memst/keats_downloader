@@ -5,3 +5,6 @@ selenium/chrome_driver/*
 *.db
 courses.json
 selenium/chromedriver.exe
+debug.log
+test.py
+test_page.py

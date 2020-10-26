@@ -1,4 +1,4 @@
-> :warning: This project is very WIP, I provide no warranty. Depending on how your lecturer uses KEATS, the video link, or the video itself might not be recognised.
+> :warning: This project is very WIP, I provide no warranty. Depending on how your lecturer uses KEATS, the link to the video page or the video itself might not be recognised.
 
 # Keats Downloader
 This is a project intended to automatically download all videos in a course and store them locally. Benefits include:
