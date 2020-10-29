@@ -27,16 +27,18 @@ for video in database.execute("SELECT * FROM Videos WHERE videoUrl IS NULL"):
 		driver.switch_to.frame(driver.find_element_by_id('contentframe'))
 		WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer_ifp')))
 		driver.switch_to.default_content()
-		
-		#still using JS for some reason. Could quite easily change this to be pure selenium, but me lazy.
-		urls = driver.execute_script(open("video_url.js").read())
-		#print(urls)
-		if(urls[1] is not None):
-			print("Fount srt")
-		database.execute("UPDATE Videos SET videoUrl=?, srtUrl=? WHERE pageUrl=?",(urls[0],urls[1],video[4]))
-		database.commit()
+		sleep(1)
 	except:
+		print("Failed to find frame")
 		continue
+	#still using JS for some reason. Could quite easily change this to be pure selenium, but me lazy.
+	urls = driver.execute_script(open("video_url.js").read())
+	#print(urls)
+	if(urls[1] is not None):
+		print("Fount srt")
+	database.execute("UPDATE Videos SET videoUrl=?, srtUrl=? WHERE pageUrl=?",(urls[0],urls[1],video[4]))
+	database.commit()
+	
 
 database.commit()
 driver.close()
