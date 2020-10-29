@@ -8,3 +8,5 @@ selenium/chromedriver.exe
 debug.log
 test.py
 test_page.py
+url_reversing.txt
+rewrite_commits.sh
