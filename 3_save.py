@@ -1,36 +1,48 @@
 import sqlite3
 import os
-import ffmpeg
+from pathlib import Path
 import requests
-#library/couse/week/name.mp4
+import ffmpeg
 
+ONLINE = False
+MAX_NAME_LENGTH = 70
 database = sqlite3.connect('example.db')
 
-for video in database.execute("SELECT * FROM Videos WHERE videoUrl IS NOT NULL"):
-	path = "library/{}/{}/{}.mp4".format(video[0],video[2],video[3])
-	srt_path = "library/{}/{}/{}.srt".format(video[0],video[2],video[3])
-	#skip if exists
-	if os.path.isfile(path):
-		continue
+def save(online=True):
+	base_folder = None
+	extension = None
+	if online:
+		base_folder="online_library"
+		extension="m3u8"
+	else:
+		base_folder="library"
+		extension="mp4"
 
-	#no url
-	if (video[4] is None):
-		continue
+	#Get all videos with valid urls
+	for video in database.execute("SELECT * FROM Videos WHERE videoUrl IS NOT NULL"):
+		dirs = []
+		for i in range(4):
+			dirs.append(video[i].strip()[0:MAX_NAME_LENGTH])
 
-	#download
-	try:
-		os.mkdir("library")
-	except:
-		pass
-	try:
-		os.mkdir("library/{}".format(video[0]))
-	except:
-		pass
-	try:
-		os.mkdir("library/{}/{}".format(video[0],video[2]))
-	except:
-		pass
-	ffmpeg.input(video[5]).output(path).run()
-	if (video[6] is not None):
-		r = requests.get(video[6])
-		open(srt_path, "wb").write(r.content)
+		directory = "{}/{}/{}".format(base_folder,dirs[0],dirs[2])
+		path = "{}/{}.{}".format(directory,dirs[3],extension)
+		srt_path = "{}/{}.srt".format(directory,dirs[3])
+
+		#skip if exists
+		if os.path.isfile(path):
+			continue
+
+		#download
+		Path(directory).mkdir(parents=True, exist_ok=True)
+
+		if online:
+			r = requests.get(video[5])
+			open(path, "wb").write(r.content)
+		else:
+			ffmpeg.input(video[5]).output(path).run()
+
+		if (video[6] is not None):
+			r = requests.get(video[6])
+			open(srt_path, "wb").write(r.content)
+
+save(online=ONLINE)
