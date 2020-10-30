@@ -5,7 +5,7 @@ import requests
 import ffmpeg
 
 ONLINE = False
-MAX_NAME_LENGTH = 70
+MAX_NAME_LENGTH = 40
 database = sqlite3.connect('example.db')
 
 def save(online=True):
@@ -31,7 +31,7 @@ def save(online=True):
 		#skip if exists
 		if os.path.isfile(path):
 			continue
-
+		print(video[1],video[2],video[3])
 		#download
 		Path(directory).mkdir(parents=True, exist_ok=True)
 

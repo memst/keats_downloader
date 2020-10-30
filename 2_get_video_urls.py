@@ -18,7 +18,7 @@ wait_element = EC.presence_of_element_located((By.ID, 'page-footer'))
 WebDriverWait(driver, 10).until(wait_element)
 print("done")
 
-for video in database.execute("SELECT * FROM Videos WHERE videoUrl IS NULL"):
+for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR file_exists IS NULL)"):
 	try:
 		print(video[1],video[2],video[3])
 		driver.get(video[4])
