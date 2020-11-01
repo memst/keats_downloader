@@ -24,9 +24,9 @@ pip3 install -r requirements.txt
 3. Download FFMpeg [here](https://github.com/BtbN/FFmpeg-Builds/releases). Copy the contents of the bin folder so that there are 3 files in the main directory.
 
 ```
-ffmpeg.exe
-ffplay.exe
-ffprobe.exe
+./ffmpeg.exe
+./ffplay.exe
+./ffprobe.exe
 ```
 
 ## Basic usage
