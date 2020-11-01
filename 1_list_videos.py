@@ -5,11 +5,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
 import sqlite3
-import json
 
 courses = []
-with open ("courses.json", "r") as f:
-	courses = json.load(f)
+with open ("courses.txt", "r") as f:
+	courses = [line.strip() for line in f.readlines()]
+
+print(courses)
+
 
 database = sqlite3.connect('example.db')
 #data_cursor = database.cursor()

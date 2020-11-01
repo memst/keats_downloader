@@ -3,7 +3,7 @@ library/*
 online_library/*
 selenium/chrome_driver/*
 *.db
-courses.json
+courses.txt
 selenium/chromedriver.exe
 debug.log
 test.py
