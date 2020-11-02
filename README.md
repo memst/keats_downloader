@@ -1,8 +1,6 @@
 
 > :warning: This project is very WIP, I provide no warranty. Depending on how your lecturer uses KEATS, the link to the video page or the video itself might not be recognised.
 
-> This project is also a fork of the original repository so our programs may not work together in the future
-
 # Keats Downloader
 This is a project intended to automatically download all videos in a course and store them locally. Benefits include:
 - Being able to playback videos at non-turtle speed (more than 2x)
