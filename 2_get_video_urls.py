@@ -16,7 +16,6 @@ driver = webdriver.Chrome(executable_path="selenium/chromedriver.exe", chrome_op
 driver.get("https://keats.kcl.ac.uk/")
 wait_element = EC.presence_of_element_located((By.ID, 'page-footer'))
 WebDriverWait(driver, 10).until(wait_element)
-print("done")
 
 for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR file_exists IS NULL)"):
 	try:
@@ -24,16 +23,16 @@ for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR fi
 		driver.get(video[4])
 		
 		WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'contentframe')))
-		driver.switch_to.frame(driver.find_element_by_id('contentframe'))
-		WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer_ifp')))
-		driver.switch_to.default_content()
-		sleep(1)
 	except:
-		print("Failed to find frame")
+		print("Failed to find video")
 		continue
-	#still using JS for some reason. Could quite easily change this to be pure selenium, but me lazy.
+
 	urls = driver.execute_script(open("video_url.js").read())
 	#print(urls)
+	if (urls[0] is None):
+		print("Failed to find video url")
+		continue
+
 	if(urls[1] is not None):
 		print("Fount srt")
 	database.execute("UPDATE Videos SET videoUrl=?, srtUrl=? WHERE pageUrl=?",(urls[0],urls[1],video[4]))
