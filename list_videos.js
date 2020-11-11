@@ -14,12 +14,15 @@ for (topic of topics) {
 	videoEntries = content.querySelectorAll(".activity.modtype_kalvidres.kalvidres,.activity.kalvidpres.modtype_kalvidpres")
 	//console.log(videoEntries)
 	for (entry of videoEntries) {
+		//Check if the video has a URL. If it doesn't, it's likely restricted
+		if (entry.getElementsByClassName("aalink").length == 0){
+			continue
+		}
+		link = entry.getElementsByClassName("aalink")[0].getAttribute("href")
+
 		entryText = entry.textContent
 		videoName = entryText.substring(0,entryText.length-" Kaltura Video Resource".length)
 		videoName = videoName.replace(/[/\\?%*:|"<>]/g, '-')
-
-
-		link = entry.getElementsByClassName("aalink")[0].getAttribute("href")
 
 		o = {
 			'course':fullName,
