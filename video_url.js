@@ -12,11 +12,12 @@ function processPlayerContents(iframe) {
 
 
 iframe1 = window.document.getElementById("contentframe").contentDocument
-iframe2 = iframe1.getElementById("kplayer_ifp")
+//Attempt to get the player frame
+iframe2 = document.getElementById("kplayer_ifp")
 
 //if kplayer is not loaded, load it manually
 if (iframe2 == null) {
-	console.log("Manually loading iframe")
+	console.log("Manually loading player frame")
 	//findClosingCurl adopted from https://stackoverflow.com/a/12752226
 	function findClosingCurl(text, openPos) {
 	    closePos = openPos;
@@ -41,9 +42,10 @@ if (iframe2 == null) {
 
 	iframe2url = "https://cdnapisec.kaltura.com/html5/html5lib/v2.84.1/mwEmbedFrame.php?&cache_st="+settings.cache_st+"&wid="+settings.wid+"&uiconf_id="+settings.uiconf_id+"&entry_id="+settings.entry_id+"&flashvars[localizationCode]=en&protocol=https"
 
-	iframe2 = document.createElement("iframe")
+	iframe2 = iframe1.createElement("iframe")
 	
 	iframe2.src = iframe2url
+	iframe2.id = "kplayer_ifp"
 	iframe1.body.appendChild(iframe2)
 }
 
