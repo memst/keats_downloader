@@ -24,7 +24,7 @@ def save(online=True):
 		for i in range(4):
 			dirs.append(video[i].strip()[0:MAX_NAME_LENGTH])
 
-		directory = "{}/{}/{}".format(base_folder,dirs[0],dirs[2])
+		directory = "{}/{}/{}".format(base_folder,dirs[0],dirs[2]).strip()
 		path = "{}/{}.{}".format(directory,dirs[3],extension)
 		srt_path = "{}/{}.srt".format(directory,dirs[3])
 
