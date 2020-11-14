@@ -18,10 +18,9 @@ wait_element = EC.presence_of_element_located((By.ID, 'page-footer'))
 WebDriverWait(driver, 10).until(wait_element)
 
 for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR file_exists IS NULL)"):
+	print(video[1],video[2],video[3])
+	driver.get(video[4])
 	try:
-		print(video[1],video[2],video[3])
-		driver.get(video[4])
-		
 		WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'contentframe')))
 	except:
 		print("Failed to find video")
