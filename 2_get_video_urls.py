@@ -20,11 +20,16 @@ WebDriverWait(driver, 10).until(wait_element)
 for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR file_exists IS NULL)"):
 	print(video[1],video[2],video[3])
 	driver.get(video[4])
-	try:
-		WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'contentframe')))
-	except:
-		print("Failed to find video")
-		continue
+
+	#Wait and open contentFrame
+	WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'contentframe')))
+	driver.switch_to.frame(driver.find_element_by_id('contentframe'))
+
+	#Make sure that the player is loaded
+	driver.execute_script(open("create_player.js").read())
+	#Process player
+	WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer_ifp')))
+	driver.switch_to.frame(driver.find_element_by_id('kplayer_ifp'))
 
 	urls = driver.execute_script(open("video_url.js").read())
 	#print(urls)
