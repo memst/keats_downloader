@@ -22,7 +22,7 @@ def save(online=True):
 	for video in database.execute("SELECT * FROM Videos WHERE videoUrl IS NOT NULL"):
 		dirs = []
 		for i in range(4):
-			dirs.append(video[i].strip()[0:MAX_NAME_LENGTH])
+			dirs.append((video[i][0:MAX_NAME_LENGTH]).strip())
 
 		directory = "{}/{}/{}".format(base_folder,dirs[0],dirs[2])
 		path = "{}/{}.{}".format(directory,dirs[3],extension)
