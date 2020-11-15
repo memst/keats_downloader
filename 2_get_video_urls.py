@@ -30,7 +30,7 @@ for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR fi
 	#Process player
 	WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer_ifp')))
 	driver.switch_to.frame(driver.find_element_by_id('kplayer_ifp'))
-	sleep(3)
+	sleep(1)
 	urls = driver.execute_script(open("video_url.js").read())
 	#print(urls)
 	if (urls[0] is None):
