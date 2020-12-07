@@ -1,6 +1,5 @@
 import sqlite3
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -31,12 +30,21 @@ for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR fi
 	except:
 		print("Failed to find frame")
 		continue
-	#still using JS for some reason. Could quite easily change this to be pure selenium, but me lazy.
-	urls = driver.execute_script(open("video_url.js").read())
-	#print(urls)
-	if(urls[1] is not None):
-		print("Fount srt")
-	database.execute("UPDATE Videos SET videoUrl=?, srtUrl=? WHERE pageUrl=?",(urls[0],urls[1],video[4]))
+		
+	try:
+		video_tag = driver.find_element_by_tag_name('video')
+	except:
+		print("Failed to find video url")
+		continue
+	video_src = video_tag.get_attribute('src')
+
+	try:
+		srt = video_tag.find_element_by_xpath("./child::*").get_attribute('src')
+		print("srt found")
+	except:
+		srt = None
+		
+	database.execute("UPDATE Videos SET videoUrl=?, srtUrl=? WHERE pageUrl=?",(video_src, srt, video[4]))
 	database.commit()
 	
 
