@@ -33,9 +33,18 @@ for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR fi
 	#Make sure that the player is loaded
 	driver.execute_script(open("create_player.js").read())
 	#Process player
-	WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer_ifp')))
+	try:
+		WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer_ifp')))
+	except:
+		#Despite the create_player script the player still wasn't found
+		print("Failed to load player")
+		continue
+
 	driver.switch_to.frame(driver.find_element_by_id('kplayer_ifp'))
+	
+	#Artificial wait for the contents of kplayer_ifp
 	sleep(1)
+
 	urls = driver.execute_script(open("video_url.js").read())
 	#print(urls)
 	if (urls[0] is None):
