@@ -22,7 +22,12 @@ for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR fi
 	driver.get(video[4])
 
 	#Wait and open contentFrame
-	WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'contentframe')))
+	try:
+		WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'contentframe')))
+	except:
+		#The only known case of failure is when a video has been removed
+		print("Failed to find frame")
+		continue
 	driver.switch_to.frame(driver.find_element_by_id('contentframe'))
 
 	#Make sure that the player is loaded
