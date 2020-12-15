@@ -8,4 +8,5 @@ selenium/chromedriver.exe
 debug.log
 test.py
 test_page.py
-*/__pycache__
+__pycache__/
+library_old

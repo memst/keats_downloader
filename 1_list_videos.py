@@ -7,41 +7,43 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from selenium import webdriver
 
-with open("courses.txt", "r") as f:
-    courses = [line.strip() for line in f.readlines()]
+import kd_utilities
 
-database = sqlite3.connect('example.db')
 
-options = webdriver.ChromeOptions()
-options.headless = False
-options.add_argument("--user-data-dir=" + os.getcwd() + "/selenium/chrome_driver")
-options.add_argument("--disable-web-security")
-driver = webdriver.Chrome(executable_path="selenium/chromedriver.exe", options=options)
+def list_videos(coruses, database, driver):
+    wait_element = EC.presence_of_element_located((By.ID, 'page-footer'))
+    for course in courses:
+        driver.get(course)
+        print(course)
+        WebDriverWait(driver, 10).until(wait_element)
+        videoDicts = driver.execute_script(open("list_videos.js").read())
+        videos = []
 
-driver.get("https://keats.kcl.ac.uk/")
-wait_element = EC.presence_of_element_located((By.ID, 'page-footer'))
-WebDriverWait(driver, 10).until(wait_element)
+        videoIndex = 1
+        weekOfPreviousVideo = ""
+        for video in videoDicts:
+            if (video['week'] != weekOfPreviousVideo):
+                videoIndex = 1
+                weekOfPreviousVideo = video['week']
+            video['name'] = "{:02}_{}".format(videoIndex, video['name'])
+            videos.append((video['course'], video['courseID'], video['week'], video['name'], video['pageUrl']))
+            videoIndex += 1
 
-for course in courses:
-    driver.get(course)
-    print(course)
-    WebDriverWait(driver, 10).until(wait_element)
-    videoDicts = driver.execute_script(open("list_videos.js").read())
-    videos = []
+        database.executemany(
+            "INSERT INTO Videos (course, courseID, week, name, pageUrl) VALUES (?, ?, ?, ?, ?) ON CONFLICT(pageUrl) DO UPDATE SET courseID=courseID",
+            videos)
 
-    videoIndex = 1
-    weekOfPreviousVideo = ""
-    for video in videoDicts:
-        if (video['week'] != weekOfPreviousVideo):
-            videoIndex = 1
-            weekOfPreviousVideo = video['week']
-        video['name'] = "{:02}_{}".format(videoIndex, video['name'])
-        videos.append((video['course'], video['courseID'], video['week'], video['name'], video['pageUrl']))
-        videoIndex += 1
 
-    database.executemany(
-        "INSERT INTO Videos (course, courseID, week, name, pageUrl) VALUES (?, ?, ?, ?, ?) ON CONFLICT(pageUrl) DO UPDATE SET courseID=courseID",
-        videos)
 
-database.commit()
-driver.quit()
+
+if __name__ == "__main__":
+    with open("courses.txt", "r") as f:
+        courses = [line.strip() for line in f.readlines()]
+
+    database = kd_utilities.open_database()
+    driver = kd_utilities.init_driver()
+
+    list_videos(courses, database, driver)
+
+    database.commit()
+    driver.quit()

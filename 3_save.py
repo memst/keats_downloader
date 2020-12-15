@@ -4,11 +4,12 @@ from pathlib import Path
 import requests
 import ffmpeg
 
+import kd_utilities
+
 ONLINE = False
 MAX_NAME_LENGTH = 40
-database = sqlite3.connect('example.db')
 
-def save(online=True):
+def download_videos(database, online=True):
     base_folder = None
     extension = None
     if online:
@@ -45,4 +46,9 @@ def save(online=True):
             r = requests.get(video[6])
             open(srt_path, "wb").write(r.content)
 
-save(online=ONLINE)
+
+
+if __name__ == "__main__":
+    database = kd_utilities.open_database()
+
+    download_videos(database, online=ONLINE)
