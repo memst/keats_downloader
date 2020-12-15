@@ -32,12 +32,12 @@ for course in courses:
     videoIndex = 1
     weekOfPreviousVideo = ""
     for video in videoDicts:
-    	if (video['week'] != weekOfPreviousVideo):
-    		videoIndex = 1
-    		weekOfPreviousVideo = video['week']
-    	video['name'] = "{:02}_{}".format(videoIndex, video['name'])
-    	videos.append((video['course'], video['courseID'], video['week'], video['name'], video['pageUrl']))
-    	videoIndex += 1
+        if (video['week'] != weekOfPreviousVideo):
+            videoIndex = 1
+            weekOfPreviousVideo = video['week']
+        video['name'] = "{:02}_{}".format(videoIndex, video['name'])
+        videos.append((video['course'], video['courseID'], video['week'], video['name'], video['pageUrl']))
+        videoIndex += 1
 
     database.executemany(
         "INSERT INTO Videos (course, courseID, week, name, pageUrl) VALUES (?, ?, ?, ?, ?) ON CONFLICT(pageUrl) DO UPDATE SET courseID=courseID",
