@@ -58,4 +58,4 @@ for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR fi
 	
 
 database.commit()
-driver.close()
+driver.quit()

@@ -36,4 +36,4 @@ for course in courses:
 
 
 database.commit()
-driver.close()
+driver.quit()
