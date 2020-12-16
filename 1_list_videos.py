@@ -25,12 +25,11 @@ def list_videos(coruses, database, driver):
             if (video['week'] != weekOfPreviousVideo):
                 videoIndex = 1
                 weekOfPreviousVideo = video['week']
-            video['name'] = "{:02}_{}".format(videoIndex, video['name'])
-            videos.append((video['course'], video['courseID'], video['week'], video['name'], video['pageUrl']))
+            videos.append((video['course'], video['courseID'], video['week'], videoIndex, video['name'], video['pageUrl']))
             videoIndex += 1
 
         database.executemany(
-            "INSERT INTO Videos (course, courseID, week, name, pageUrl) VALUES (?, ?, ?, ?, ?) ON CONFLICT(pageUrl) DO UPDATE SET courseID=courseID",
+            "INSERT INTO Videos (course, courseID, week, videoInWeek, name, pageUrl) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(pageUrl) DO UPDATE SET videoInWeek=excluded.videoInWeek",
             videos)
 
 

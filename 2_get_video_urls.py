@@ -9,9 +9,9 @@ from time import sleep
 import kd_utilities
 
 def get_video_urls(database, driver):
-    for video in database.execute("SELECT * FROM Videos WHERE (file_exists = 0 OR file_exists IS NULL)"):
-        print(video[1],video[2],video[3])
-        driver.get(video[4])
+    for video in database.execute("SELECT courseID, week, name, pageUrl FROM Videos WHERE (file_exists = 0 OR file_exists IS NULL)"):
+        print(video[0],video[1],video[2])
+        driver.get(video[3])
 
         #Wait and open contentFrame
         try:
@@ -46,7 +46,7 @@ def get_video_urls(database, driver):
 
         if(urls[1] is not None):
             print("Fount srt")
-        database.execute("UPDATE Videos SET videoUrl=?, srtUrl=? WHERE pageUrl=?",(urls[0],urls[1],video[4]))
+        database.execute("UPDATE Videos SET videoUrl=?, srtUrl=? WHERE pageUrl=?",(urls[0],urls[1],video[3]))
         database.commit()
     
 

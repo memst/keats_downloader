@@ -7,44 +7,28 @@ import ffmpeg
 import kd_utilities
 
 ONLINE = False
-MAX_NAME_LENGTH = 40
 
-def download_videos(database, online=True):
-    base_folder = None
-    extension = None
-    if online:
-        base_folder="online_library"
-        extension="m3u8"
-    else:
-        base_folder="library"
-        extension="mp4"
-
+def download_videos(database, online=False):
     #Get all videos with valid urls
-    for video in database.execute("SELECT * FROM Videos WHERE videoUrl IS NOT NULL"):
-        dirs = []
-        for i in range(4):
-            dirs.append((video[i][0:MAX_NAME_LENGTH]).strip())
-
-        directory = "{}/{}/{}".format(base_folder,dirs[0],dirs[2])
-        path = "{}/{}.{}".format(directory,dirs[3],extension)
-        srt_path = "{}/{}.srt".format(directory,dirs[3])
+    for page_url, video_url, srt_url in database.execute("SELECT pageUrl, videoUrl, srtUrl FROM Videos WHERE videoUrl IS NOT NULL"):
+        paths = kd_utilities.get_paths(page_url, database, online=online)
 
         #skip if exists
-        if os.path.isfile(path):
+        if os.path.isfile(paths['file_path']):
             continue
-        print(video[1],video[2],video[3])
+
         #download
-        Path(directory).mkdir(parents=True, exist_ok=True)
+        Path(paths['directory']).mkdir(parents=True, exist_ok=True)
 
         if online:
-            r = requests.get(video[5])
-            open(path, "wb").write(r.content)
+            r = requests.get(video_url)
+            open(paths['file_path'], "wb").write(r.content)
         else:
-            ffmpeg.input(video[5]).output(path,codec="copy").run()
+            ffmpeg.input(video_url).output(paths['file_path'],codec="copy").run()
 
-        if (video[6] is not None):
-            r = requests.get(video[6])
-            open(srt_path, "wb").write(r.content)
+        if (srt_url is not None):
+            r = requests.get(srt_url)
+            open(paths['srt_path'], "wb").write(r.content)
 
 
 
