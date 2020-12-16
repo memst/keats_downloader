@@ -10,3 +10,5 @@ test.py
 test_page.py
 __pycache__/
 library_old
+venv/
+.idea/

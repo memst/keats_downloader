@@ -23,8 +23,16 @@ def init_driver():
 
     return driver
 
-def open_database():
-	return sqlite3.connect('main.db')
+def open_database(filename):
+    return sqlite3.connect(filename)
+
+def create_database(filename):
+    statement = "CREATE TABLE \"videos\" ( `course_name` TEXT NOT NULL, `course_id` TEXT NOT NULL, `week` TEXT NOT NULL, 'video_in_week' INTEGER DEFAULT NULL, `video_name` TEXT NOT NULL, `page_url` TEXT NOT NULL UNIQUE, `video_url` TEXT, `srt_url` TEXT, `file_exists` INTEGER DEFAULT 0, PRIMARY KEY(`page_url`) )"
+
+    database = sqlite3.connect(filename)
+    database.execute(statement)
+    database.commit()
+
 
 def get_paths(page_url, database, online=False):
     base_folder = None
