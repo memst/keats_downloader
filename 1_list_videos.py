@@ -16,20 +16,20 @@ def list_videos(coruses, database, driver):
         driver.get(course)
         print(course)
         WebDriverWait(driver, 10).until(wait_element)
-        videoDicts = driver.execute_script(open("list_videos.js").read())
+        video_dicts = driver.execute_script(open("ListVideos.js").read())
         videos = []
 
-        videoIndex = 1
-        weekOfPreviousVideo = ""
-        for video in videoDicts:
-            if (video['week'] != weekOfPreviousVideo):
-                videoIndex = 1
-                weekOfPreviousVideo = video['week']
-            videos.append((video['course'], video['courseID'], video['week'], videoIndex, video['name'], video['pageUrl']))
-            videoIndex += 1
+        video_index = 1
+        week_of_previous_video = ""
+        for video in video_dicts:
+            if (video['week'] != week_of_previous_video):
+                video_index = 1
+                week_of_previous_video = video['week']
+            videos.append((video['course_name'], video['course_id'], video['week'], video_index, video['video_name'], video['page_url']))
+            video_index += 1
 
         database.executemany(
-            "INSERT INTO Videos (course, courseID, week, videoInWeek, name, pageUrl) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(pageUrl) DO UPDATE SET videoInWeek=excluded.videoInWeek",
+            "INSERT INTO videos (course_name, course_id, week, video_in_week, video_name, page_url) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(page_url) DO UPDATE SET video_in_week=excluded.video_in_week",
             videos)
 
 

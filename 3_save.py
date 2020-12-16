@@ -10,7 +10,7 @@ ONLINE = False
 
 def download_videos(database, online=False):
     #Get all videos with valid urls
-    for page_url, video_url, srt_url in database.execute("SELECT pageUrl, videoUrl, srtUrl FROM Videos WHERE videoUrl IS NOT NULL"):
+    for page_url, video_url, srt_url in database.execute("SELECT page_url, video_url, srt_url FROM videos WHERE video_url IS NOT NULL"):
         paths = kd_utilities.get_paths(page_url, database, online=online)
 
         #skip if exists

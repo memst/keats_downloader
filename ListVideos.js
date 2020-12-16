@@ -25,11 +25,11 @@ for (topic of topics) {
         videoName = videoName.replace(/[/\\?%*:|"<>]/g, '-')
 
         o = {
-            'course':fullName,
-            'courseID':id,
+            'course_name':fullName,
+            'course_id':id,
             'week':weekName,
-            'name':videoName,
-            'pageUrl':link
+            'video_name':videoName,
+            'page_url':link
         }
         videos.push(o)
     }

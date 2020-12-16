@@ -24,7 +24,7 @@ def init_driver():
     return driver
 
 def open_database():
-	return sqlite3.connect('example.db')
+	return sqlite3.connect('main.db')
 
 def get_paths(page_url, database, online=False):
     base_folder = None
@@ -36,12 +36,12 @@ def get_paths(page_url, database, online=False):
         base_folder="library"
         extension="mp4"
 
-    course_id, week, video_in_week, name = database.execute("SELECT courseID, week, videoInWeek, name FROM Videos WHERE pageUrl = ?", (page_url,)).fetchone()
+    course_id, week, video_in_week, video_name = database.execute("SELECT course_id, week, video_in_week, video_name FROM videos WHERE page_url = ?", (page_url,)).fetchone()
 
     directory = "{}/{}/{}".format(base_folder, course_id, week)
-    file_name = "{:02}_{}.{}".format(video_in_week, name[0:MAX_NAME_LENGTH], extension)
+    file_name = "{:02}_{}.{}".format(video_in_week, video_name[0:MAX_NAME_LENGTH], extension)
     file_directory = "{}/{}".format(directory, file_name)
-    srt_name = "{:02}_{}.srt".format(video_in_week, name[0:MAX_NAME_LENGTH])
+    srt_name = "{:02}_{}.srt".format(video_in_week, video_name[0:MAX_NAME_LENGTH])
     srt_path = "{}/{}".format(directory, srt_name)
 
     return {
