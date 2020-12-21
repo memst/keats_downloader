@@ -22,7 +22,7 @@ def login():
 	driver.quit()
 
 if not os.path.isfile(settings.settings['database_file']):
-	utilities.create_database()
+	utilities.create_database(settings.settings['database_file'])
 
 if not settings.settings['logged_in']:
 	login()
@@ -33,10 +33,10 @@ database = utilities.open_database(settings.settings['database_file'])
 with open("courses.txt", "r") as f:
     courses = [line.strip() for line in f.readlines()]
 
-#scripts.list_videos(courses, database, driver)
-#scripts.check_exists(database)
+scripts.list_videos(courses, database, driver)
+scripts.check_exists(database)
 scripts.get_video_urls(database, driver)
-scripts.download_videos(database)
+#scripts.download_videos(database)
 scripts.check_exists(database)
 
 driver.quit()
