@@ -44,12 +44,13 @@ def get_paths(page_url, database, online=False):
         base_folder="library"
         extension="mp4"
 
-    course_id, week, video_in_week, video_name = database.execute("SELECT course_id, week, video_in_week, video_name FROM videos WHERE page_url = ?", (page_url,)).fetchone()
+    course_id, week, video_in_week, video_name = [x.strip() if type(x) is str else x
+        for x in database.execute("SELECT course_id, week, video_in_week, video_name FROM videos WHERE page_url = ?", (page_url,)).fetchone()]
 
     directory = "{}/{}/{}".format(base_folder, course_id, week)
-    file_name = "{:02}_{}.{}".format(video_in_week, video_name[0:MAX_NAME_LENGTH], extension)
+    file_name = "{:02}_{}.{}".format(video_in_week, video_name[0:MAX_NAME_LENGTH].strip(), extension)
     file_directory = "{}/{}".format(directory, file_name)
-    srt_name = "{:02}_{}.srt".format(video_in_week, video_name[0:MAX_NAME_LENGTH])
+    srt_name = "{:02}_{}.srt".format(video_in_week, video_name[0:MAX_NAME_LENGTH].strip())
     srt_path = "{}/{}".format(directory, srt_name)
 
     return {
