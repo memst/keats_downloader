@@ -33,10 +33,12 @@ database = utilities.open_database(settings.settings['database_file'])
 with open("courses.txt", "r") as f:
     courses = [line.strip() for line in f.readlines()]
 
-scripts.list_videos(courses, database, driver)
-scripts.check_exists(database)
-scripts.get_video_urls(database, driver)
-#scripts.download_videos(database)
-scripts.check_exists(database)
+try:
+	scripts.list_videos(courses, database, driver)
+	scripts.check_exists(database)
+	scripts.get_video_urls(database, driver)
+finally:
+	driver.quit()
 
-driver.quit()
+scripts.download_videos(database)
+scripts.check_exists(database)
