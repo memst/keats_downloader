@@ -58,12 +58,10 @@ def get_video_urls(database, driver):
             continue
 
         driver.switch_to.frame(driver.find_element_by_id('kplayer_ifp'))
-        
-        #Artificial wait for the contents of kplayer_ifp
-        time.sleep(1)
 
-        #May cause an exception
+        #Get video/srt URL
         urls = driver.execute_script(open("downloader/VideoUrl.js").read())
+        print(urls)
         #print(urls)
         if (urls[0] is None):
             print("Failed to find video url")
