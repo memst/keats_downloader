@@ -72,7 +72,7 @@ def get_video_urls(database, driver):
         database.execute("UPDATE videos SET video_url=?, srt_url=? WHERE page_url=?",(urls[0],urls[1],video[3]))
         database.commit()
 
-def download_videos(database, online=False):
+def download_videos(database, online=False, embed_subtitles=False):
     #Get all videos with valid urls
     for page_url, video_url, srt_url in database.execute("SELECT page_url, video_url, srt_url FROM videos WHERE video_url IS NOT NULL"):
         paths = utilities.get_paths(page_url, database, online=online)
@@ -84,13 +84,22 @@ def download_videos(database, online=False):
         #download
         Path(paths['directory']).mkdir(parents=True, exist_ok=True)
 
+        print(f"Launching ffmpeg\nPage URL: {page_url}\nVideo URL: {video_url}\npaths: {paths}\n")
         if online:
             r = requests.get(video_url)
             open(paths['file_path'], "wb").write(r.content)
+        elif (embed_subtitles and srt_url is not None):
+            (ffmpeg
+                .input(video_url)
+                .output(paths['file_path'],vcodec="copy", acodec="copy", scodec="mov_text", 
+                    **{'metadata:s:s:0': "language=eng", 'disposition:s:s:0': "default"})
+                .global_args('-i', srt_url)
+                .run()
+            )
         else:
             ffmpeg.input(video_url).output(paths['file_path'],codec="copy").run()
 
-        if (srt_url is not None):
+        if ((not embed_subtitles or online) and (srt_url is not None)):
             r = requests.get(srt_url)
             open(paths['srt_path'], "wb").write(r.content)
 
