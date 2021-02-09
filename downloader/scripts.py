@@ -61,7 +61,6 @@ def get_video_urls(database, driver):
 
         #Get video/srt URL
         urls = driver.execute_script(open("downloader/VideoUrl.js").read())
-        print(urls)
         #print(urls)
         if (urls[0] is None):
             print("Failed to find video url")
@@ -72,9 +71,9 @@ def get_video_urls(database, driver):
         database.execute("UPDATE videos SET video_url=?, srt_url=? WHERE page_url=?",(urls[0],urls[1],video[3]))
         database.commit()
 
-def download_videos(database, online=False, embed_subtitles=False):
+def download_videos(database, online=False, embed_subtitles=False, ffmpeg_verbosity="error"):
     #Get all videos with valid urls
-    for page_url, video_url, srt_url in database.execute("SELECT page_url, video_url, srt_url FROM videos WHERE video_url IS NOT NULL"):
+    for course_id, week, video_name, page_url, video_url, srt_url in database.execute("SELECT course_id, week, video_name, page_url, video_url, srt_url FROM videos WHERE video_url IS NOT NULL"):
         paths = utilities.get_paths(page_url, database, online=online)
 
         #skip if exists
@@ -84,7 +83,8 @@ def download_videos(database, online=False, embed_subtitles=False):
         #download
         Path(paths['directory']).mkdir(parents=True, exist_ok=True)
 
-        print(f"Launching ffmpeg\nPage URL: {page_url}\nVideo URL: {video_url}\npaths: {paths}\n")
+        print(f"Downloading {course_id} {week} {video_name}...")
+        #print(f"Launching ffmpeg\nPage URL: {page_url}\nVideo URL: {video_url}\npaths: {paths}\n")
         if online:
             r = requests.get(video_url)
             open(paths['file_path'], "wb").write(r.content)
@@ -94,10 +94,11 @@ def download_videos(database, online=False, embed_subtitles=False):
                 .output(paths['file_path'],vcodec="copy", acodec="copy", scodec="mov_text", 
                     **{'metadata:s:s:0': "language=eng", 'disposition:s:s:0': "default"})
                 .global_args('-i', srt_url)
+                .global_args('-loglevel', ffmpeg_verbosity)
                 .run()
             )
         else:
-            ffmpeg.input(video_url).output(paths['file_path'],codec="copy").run()
+            ffmpeg.input(video_url).output(paths['file_path'],codec="copy").global_args('-loglevel', ffmpeg_verbosity).run()
 
         if ((not embed_subtitles or online) and (srt_url is not None)):
             r = requests.get(srt_url)
