@@ -3,13 +3,13 @@ import sqlite3
 import os
 from pathlib import Path
 import requests
-import ffmpeg
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from . import utilities
+from . import FFhandler
 
 def list_videos(courses, database, driver):
     wait_element = EC.presence_of_element_located((By.ID, 'page-footer'))
@@ -89,16 +89,11 @@ def download_videos(database, online=False, embed_subtitles=False, ffmpeg_verbos
             r = requests.get(video_url)
             open(paths['file_path'], "wb").write(r.content)
         elif (embed_subtitles and srt_url is not None):
-            (ffmpeg
-                .input(video_url)
-                .output(paths['file_path'],vcodec="copy", acodec="copy", scodec="mov_text", 
-                    **{'metadata:s:s:0': "language=eng", 'disposition:s:s:0': "default"})
-                .global_args('-i', srt_url)
-                .global_args('-loglevel', ffmpeg_verbosity)
-                .run()
-            )
+            FFhandler.execute(['-i', video_url, '-i', srt_url, '-c', 'copy', 
+                '-c:s', 'mov_text', '-metadata:s:s:0', 'language=eng', '-disposition:s:s:0', 
+                'default', paths['file_path']], name=f"Downloading {course_id} {week} {video_name}")
         else:
-            ffmpeg.input(video_url).output(paths['file_path'],codec="copy").global_args('-loglevel', ffmpeg_verbosity).run()
+            FFhandler.execute(['-i', video_url, '-c', 'copy', paths['file_path']], name=f"Downloading {course_id} {week} {video_name}")
 
         if ((not embed_subtitles or online) and (srt_url is not None)):
             r = requests.get(srt_url)
