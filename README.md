@@ -1,5 +1,5 @@
 
-> :warning: This project is very WIP and some things might not work correctly. If you encounter any problems, issue a bug report or create a pull request.
+> This project is very WIP and some things might not work correctly. If you encounter any problems, issue a bug report or create a pull request.
 
 # Keats Downloader
 This is a project intended to automatically download all videos in a course and store them locally. Benefits include:
@@ -35,7 +35,10 @@ This is a project intended to automatically download all videos in a course and 
 	https://keats.kcl.ac.uk/course/view.php?id=CCCCC
 	https://keats.kcl.ac.uk/course/view.php?id=DDDDD
 	```
-2. Execute the python files in their numbered order. The 0-numbered files should be executed only once, others will have to be reapeated if you want to download new videos. `0_login.py` gives you an opportunity to login to your keats account because the browser uses a separate profile.
+2. Run `main.py` through terminal:
+	```
+	python main.py
+	```
 
 You still need to have logged in to your account to use this.
 
