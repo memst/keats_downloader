@@ -45,19 +45,19 @@ def get_video_urls(database, driver):
             #The only known case of failure is when a video has been removed
             print("Failed to find frame")
             continue
-        driver.switch_to.frame(driver.find_element_by_id('contentframe'))
+        driver.switch_to.frame(driver.find_element(By.ID,'contentframe'))
 
         #Make sure that the player is loaded
         driver.execute_script(open("downloader/CreatePlayer.js").read())
         #Process player
         try:
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer_ifp')))
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'kplayer')))
         except:
             #Despite the create_player script the player still wasn't found
             print("Failed to load player")
             continue
 
-        driver.switch_to.frame(driver.find_element_by_id('kplayer_ifp'))
+        driver.switch_to.frame(driver.find_element(By.ID,'kplayer_ifp'))
 
         #Get video/srt URL
         urls = driver.execute_script(open("downloader/VideoUrl.js").read())

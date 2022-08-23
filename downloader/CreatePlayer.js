@@ -3,7 +3,7 @@
 
 
 //Attempt to get the player frame
-iframe2 = document.getElementById("kplayer_ifp");
+iframe2 = document.getElementById("kplayer")
 
 //if kplayer is not loaded, load it manually
 if (iframe2 == null) {
