@@ -4,12 +4,12 @@ fullName = subdirs[subdirs.length-1].children[0].children[0].getAttribute("title
 fullName = fullName.replace(/[/\\?%*:|"<>]/g, '-');
 id = fullName.substring(0,8);
 
-topics = document.getElementsByClassName("ctopics topics row-fluid")[0].children;
+topics = document.getElementsByClassName("ctopics topics row")[0].children;
 //iterate through weeks
 videos = [];
 for (topic of topics) {
     content = topic.getElementsByClassName("content")[0];
-    weekName = content.children[0].textContent;
+    weekName = content.children[0].getElementsByClassName("sectionname")[0].innerHTML
     weekName = weekName.replace(/[/\\?%*:|"<>]/g, '-');
 
     videoEntries = content.querySelectorAll(".activity.modtype_kalvidres.kalvidres,.activity.kalvidpres.modtype_kalvidpres");
@@ -21,9 +21,11 @@ for (topic of topics) {
         }
         link = entry.getElementsByClassName("aalink")[0].getAttribute("href");
 
-        entryText = entry.textContent;
-        videoName = entryText.substring(0,entryText.length-" Kaltura Video Resource".length);
-        videoName = videoName.replace(/[/\\?%*:|"<>]/g, '-');
+        // Remove kaltura text
+		entry.getElementsByClassName("instancename")[0].children[0].remove()
+
+		videoName = entry.getElementsByClassName("instancename")[0].innerHTML
+		videoName = videoName.replace(/[/\\?%*:|"<>]/g, '-')
 
         o = {
             'course_name':fullName,
